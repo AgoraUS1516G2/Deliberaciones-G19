@@ -40,7 +40,7 @@ pagesize="5" class="displaytag" >
 
 </display:table>
 
-
+<h1><spring:message code="customer.header.comments" /> </h1>
 <display:table name="comments" id="row"
 
 requestURI="customer/seeThread.do"
@@ -50,6 +50,14 @@ pagesize="5" class="displaytag" >
 
 <display:column title="${author}"><jstl:out value="${row.user.name }"></jstl:out></display:column>
 <display:column title="${text }"> <jstl:out value="${row.text }"></jstl:out></display:column>
+<jstl:if test="${principal.getComments.containts(row)}">
+<display:column>
+			<a href="comment/customer/edit.do?id=${row.id}"><spring:message
+					code="comment.edit" /></a>
+</display:column>
+</jstl:if>
+
+
 
 
 
