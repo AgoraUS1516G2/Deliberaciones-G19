@@ -43,7 +43,7 @@
 		</security:authorize>
 		
 		<security:authorize access="isAnonymous()">
-			<li><a class="fNiv" href="customer/login.do"><spring:message code="master.page.login.A" /></a></li>
+			<li><a class="fNiv" href="security/login.do"><spring:message code="master.page.login.A" /></a></li>
 			<li><a class="fNiv" href="customer/loginFromCensusForm.do"><spring:message code="master.page.login.C" /></a></li>
 			
 			
