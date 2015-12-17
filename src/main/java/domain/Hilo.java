@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -16,6 +17,8 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.annotation.Timed;
+
+
 @Entity
 @Access(AccessType.PROPERTY)
 public class Hilo extends DomainEntity{
@@ -25,8 +28,10 @@ public class Hilo extends DomainEntity{
 	private String title;
 	private Date creationMoment;
 	private String text;
+	private int censusId;
 	
 	
+
 	@NotBlank
 	@SafeHtml
 	public String getTitle() {
@@ -34,6 +39,13 @@ public class Hilo extends DomainEntity{
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public int getCensusId() {
+		return censusId;
+	}
+	public void setCensusId(int censusId) {
+		this.censusId = censusId;
 	}
 	
 	@NotNull
@@ -76,7 +88,5 @@ public class Hilo extends DomainEntity{
 	public void setComments(Collection<Comment> comments) {
 		this.comments = comments;
 	}
-	
-	
 	
 }

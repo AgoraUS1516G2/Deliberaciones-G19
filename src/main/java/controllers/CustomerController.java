@@ -82,7 +82,29 @@ public class CustomerController extends AbstractController {
 	public CustomerController() {
 		super();
 	}
-
+	
+	
+	/*
+	 * 
+	 */
+	
+	@RequestMapping("/createThreadFromVotacion")
+	public ModelAndView createTreadFromVotacion(String title,int id){
+		
+		User user=userService.findByUsername("customer");
+		
+		Hilo hilo=new Hilo();
+		hilo.setCreationMoment(new Date());
+		hilo.setText("Hilo sobre la votación: "+title);
+		hilo.setUser(user);
+		hilo.setTitle(title);
+		hilo.setCensusId(id);
+		hilo.setComments(new ArrayList<Comment>());
+		threadService.save(hilo);
+		return 	new ModelAndView("redirect:listThreads.do");
+	}
+	
+	
 	// Action-1 ---------------------------------------------------------------		
 
 	@RequestMapping("/action-1")
@@ -826,23 +848,7 @@ public class CustomerController extends AbstractController {
 	//CREACIÓN DE HILOS DESDE CREACIÓN/ADMINISTRACIÓN DE VOTACIONES, LES DEBEMOS DE DAR UN LINK PARA QUE NOS TRAIGA Y CREEMOS UNOS NOSOTROS
 	
 	
-	@RequestMapping("/createThreadFromVotacion")
-	public ModelAndView createTreadFromVotacion(String name){
-		
-		User user=userService.findByUsername("customer");
-		
-		Hilo nuevo=new Hilo();
-		nuevo.setCreationMoment(new Date());
-		nuevo.setText("Hilo sobre la votación: "+name);
-		nuevo.setUser(user);
-		nuevo.setTitle("Votación "+name);
-		nuevo.setComments(new ArrayList<Comment>());
-		
-		threadService.save(nuevo);
-		return 	new ModelAndView("redirect:listThreads.do");
-		
-		//CreacionAdminVotaciones/#/create
-	}
+	
 	
 	
 	
