@@ -31,7 +31,7 @@ public class Hilo extends DomainEntity{
 	private int censusId;
 	
 	
-
+	@NotNull
 	@NotBlank
 	@SafeHtml
 	public String getTitle() {
@@ -41,6 +41,9 @@ public class Hilo extends DomainEntity{
 		this.title = title;
 	}
 	
+	@NotNull
+	@NotBlank
+	@SafeHtml
 	public int getCensusId() {
 		return censusId;
 	}
