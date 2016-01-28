@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -16,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.test.annotation.Timed;
 
 
 @Entity
@@ -41,9 +39,9 @@ public class Hilo extends DomainEntity{
 		this.title = title;
 	}
 	
+	//siempre recibe un numero para saber a que censo corresponde, 
+	//en caso de ser censo abierto recibe un 0
 	@NotNull
-	@NotBlank
-	@SafeHtml
 	public int getCensusId() {
 		return censusId;
 	}

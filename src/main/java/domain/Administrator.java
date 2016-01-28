@@ -1,6 +1,6 @@
 
 package domain;
-import java.util.Collection;
+
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;

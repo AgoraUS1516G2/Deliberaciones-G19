@@ -91,19 +91,15 @@
 	
 	
 	<bean id="thread1" class="domain.Hilo">
-	<property name="user" ref="user1"></property>
-	<property name="creationMoment" value="11/11/2004 12:12"></property>
-	<property name="title" value="titulo"></property>
-	<property name="text" value="text"></property>
+	<property name="title" value="titulo"/>
+	<property name="creationMoment" value="11/11/2004 12:12"/>
+	<property name="text" value="text"/>
+	<property name="censusId" value="0"/>
+	<property name="user" ref="user1"/>
 	<property name="comments">
-	
-	<list>
-	
-	
-	</list>
+		<list>
+		</list>
 	</property>
-	
-	
 	</bean>
 	
 	
