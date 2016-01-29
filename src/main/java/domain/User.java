@@ -13,7 +13,6 @@ import org.hibernate.validator.constraints.SafeHtml;
 @Access(AccessType.PROPERTY)
 public class User extends Actor{
 	
-	
 	//Atributtes
 	private boolean banned;
 	private int numberOfMessages;
