@@ -57,56 +57,180 @@
 		</property>
 	</bean>
 	
+	<bean id="userAccount4" class="security.UserAccount">
+		<property name="username" value="customer2" />
+		<property name="password" value="5ce4d191fd14ac85a1469fb8c29b7a7b" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="CUSTOMER" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="userAccount5" class="security.UserAccount">
+		<property name="username" value="customer3" />
+		<property name="password" value="033f7f6121501ae98285ad77f216d5e7" />
+		<property name="authorities">
+			<list>
+				<bean class="security.Authority">
+					<property name="authority" value="CUSTOMER" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
 	<!-- Other domain beans come here -->	
 	
+	<!-- Administrator  -->
+	<bean id="admin" class="domain.Administrator">
+		<property name="name" value="NombreAdmin"/>
+		<property name="surname" value="ApellidoAdmin"/>
+		<property name="email" value="admin@gmail.com"/>
+		<property name="location" value="Sevilla"/>
+		<property name="userAccount" ref="userAccount1" />
+	</bean>
+	
+	
+	<!-- User  -->
 	<bean id="user1" class="domain.User">
-		
-		<property name="name" value="nombre"/>
-		<property name="surname" value="surname"/>
-		<property name="email" value="caballeroalba@gmail.com"/>
-		<property name="location" value="sevilla"/>
+		<property name="name" value="NombreUs1"/>
+		<property name="surname" value="AplellidoUs1"/>
+		<property name="email" value="user1@gmail.com"/>
+		<property name="location" value="Sevilla"/>
 		<property name="userAccount" ref="userAccount2" />
 		<property name="banned" value="false"/>
 		<property name="numberOfMessages" value="0"/>
 		<property name="url" value="www.google.es"/>
 		<property name="threads">
 		<list>
-		
-		
+			 <ref bean="thread1" />
 		</list>
-		
-		
 		</property>
-		
 		<property name="comments">
 		<list>
-		
-		
+			 <ref bean="comment1" />
 		</list>
-		
-		
 		</property>
-
 	</bean>
 	
 	
+	<bean id="user2" class="domain.User">
+		<property name="name" value="NombreUs2"/>
+		<property name="surname" value="ApellidoUs2"/>
+		<property name="email" value="user2@gmail.com"/>
+		<property name="location" value="Sevilla"/>
+		<property name="userAccount" ref="userAccount4" />
+		<property name="banned" value="false"/>
+		<property name="numberOfMessages" value="0"/>
+		<property name="url" value="www.google.es"/>
+		<property name="threads">
+		<list>
+		</list>
+		</property>
+		<property name="comments">
+		<list>
+			 <ref bean="comment2" />
+			 <ref bean="comment3" />
+		</list>
+		</property>
+	</bean>
+	
+	<bean id="user3" class="domain.User">
+		<property name="name" value="NombreUs3"/>
+		<property name="surname" value="ApellidoUs3"/>
+		<property name="email" value="user3@gmail.com"/>
+		<property name="location" value="Sevilla"/>
+		<property name="userAccount" ref="userAccount5" />
+		<property name="banned" value="false"/>
+		<property name="numberOfMessages" value="0"/>
+		<property name="url" value="www.google.es"/>
+		<property name="threads">
+		<list>
+			 <ref bean="thread2" />
+		</list>
+		</property>
+		<property name="comments">
+		<list>
+			 <ref bean="comment4" />
+			 <ref bean="comment5" />
+			 <ref bean="comment6" />
+		</list>
+		</property>
+	</bean>
+	
+	<!-- Thread  -->
 	<bean id="thread1" class="domain.Hilo">
-	<property name="title" value="titulo"/>
+	<property name="title" value="titulo1"/>
 	<property name="creationMoment" value="11/11/2004 12:12"/>
-	<property name="text" value="text"/>
+	<property name="text" value="text1"/>
 	<property name="censusId" value="0"/>
 	<property name="user" ref="user1"/>
 	<property name="comments">
 		<list>
+			 <ref bean="comment1" />
+			 <ref bean="comment2" />
+			 <ref bean="comment3" />
 		</list>
 	</property>
 	</bean>
 	
+	<bean id="thread2" class="domain.Hilo">
+	<property name="title" value="titulo2"/>
+	<property name="creationMoment" value="12/11/2004 12:12"/>
+	<property name="text" value="text2"/>
+	<property name="censusId" value="0"/>
+	<property name="user" ref="user3"/>
+	<property name="comments">
+		<list>
+			 <ref bean="comment4" />
+			 <ref bean="comment5" />
+			 <ref bean="comment6" />
+		</list>
+	</property>
+	</bean>
+
+	<!-- Comment  -->
+	<bean id="comment1" class="domain.Comment">
+	<property name="text" value="texto1"/>
+	<property name="creationMoment" value="11/11/2004 12:12"/>
+	<property name="user" ref="user1"/>
+	<property name="thread" ref="thread1"/>
+	</bean>
 	
+	<bean id="comment2" class="domain.Comment">
+	<property name="text" value="texto2"/>
+	<property name="creationMoment" value="12/11/2004 12:12"/>
+	<property name="user" ref="user2"/>
+	<property name="thread" ref="thread1"/>
+	</bean>
 	
+	<bean id="comment3" class="domain.Comment">
+	<property name="text" value="texto3"/>
+	<property name="creationMoment" value="13/11/2004 12:12"/>
+	<property name="user" ref="user2"/>
+	<property name="thread" ref="thread1"/>
+	</bean>
 	
+	<bean id="comment4" class="domain.Comment">
+	<property name="text" value="texto4"/>
+	<property name="creationMoment" value="14/11/2004 12:12"/>
+	<property name="user" ref="user3"/>
+	<property name="thread" ref="thread2"/>
+	</bean>
 	
+	<bean id="comment5" class="domain.Comment">
+	<property name="text" value="texto5"/>
+	<property name="creationMoment" value="15/11/2004 12:12"/>
+	<property name="user" ref="user3"/>
+	<property name="thread" ref="thread2"/>
+	</bean>
 	
-	
-	
+	<bean id="comment6" class="domain.Comment">
+	<property name="text" value="texto6"/>
+	<property name="creationMoment" value="13/11/2004 12:12"/>
+	<property name="user" ref="user3"/>
+	<property name="thread" ref="thread2"/>
+	</bean>
 </beans>
