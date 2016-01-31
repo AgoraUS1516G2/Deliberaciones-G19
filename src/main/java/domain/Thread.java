@@ -17,7 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Access(AccessType.PROPERTY)
-public class Hilo extends DomainEntity{
+public class Thread extends DomainEntity{
 	
 	//Atributtes
 	private String title;
@@ -26,7 +26,7 @@ public class Hilo extends DomainEntity{
 	private int censusId;
 	
 	//Constructor
-	public Hilo(){
+	public Thread(){
 		super();
 	}
 	

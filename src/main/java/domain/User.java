@@ -52,7 +52,7 @@ public class User extends Actor{
 	
 	
 	Collection<Comment> comments;
-	Collection<Hilo> threads;
+	Collection<Thread> threads;
 	
 	@NotNull
 	@OneToMany(mappedBy="user")
@@ -64,10 +64,10 @@ public class User extends Actor{
 	}
 	@NotNull
 	@OneToMany(mappedBy="user")
-	public Collection<Hilo> getThreads() {
+	public Collection<Thread> getThreads() {
 		return threads;
 	}
-	public void setThreads(Collection<Hilo> threads) {
+	public void setThreads(Collection<Thread> threads) {
 		this.threads = threads;
 	}
 	

@@ -29,7 +29,7 @@ public class Comment extends DomainEntity {
 	
 	//Relationships
 	private User user;
-	private Hilo thread;
+	private Thread thread;
 
 	//Getters and Setters
 	@NotNull
@@ -64,11 +64,11 @@ public class Comment extends DomainEntity {
 	}
 	@NotNull
 	@ManyToOne(optional=false)
-	public Hilo getThread() {
+	public Thread getThread() {
 		return thread;
 	}
 	
-	public void setThread(Hilo thread) {
+	public void setThread(Thread thread) {
 		this.thread = thread;
 	}
 	
