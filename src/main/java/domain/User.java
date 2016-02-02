@@ -24,7 +24,7 @@ public class User extends Actor{
 	
 	@NotNull
 	
-	public boolean isBanned() {
+	public boolean getBanned() {
 		return banned;
 	}
 	public void setBanned(boolean banned) {
