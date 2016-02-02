@@ -8,38 +8,36 @@ import org.springframework.transaction.annotation.Transactional;
 
 import repositories.UserRepository;
 import security.LoginService;
-import security.UserAccountRepository;
 import domain.User;
 
 @Service
 @Transactional
 public class UserService {
+	
+	// Managed repository --------------------
 	@Autowired
 	private UserRepository userRepository;
 	
-	@Autowired
-	private LoginService loginService;
-
-	public Collection<User> findAll() {
+	
+	// Simple CRUD methods ----------
+	public User save(User user){
+		return userRepository.save(user);
+	}
+	
+	public Collection<User>  findAll(){
 		return userRepository.findAll();
 	}
-
+	
 	public User findOne(Integer valueOf) {
 		return userRepository.findOne(valueOf);
 	}
-
-	public User save(User user) {
-		return userRepository.save(user);
-	}
-
+	
+	//Other business methods -------------------
 	public User findByPrincipal() {
-		// TODO Auto-generated method stub
-		return userRepository.findOneByPrincipal(loginService.getPrincipal()
-				.getId());
+		return userRepository.findOneByPrincipal(LoginService.getPrincipa().getId());
 	}
-
+	
 	public User findByUsername(String username) {
-		// TODO Auto-generated method stub
 		return userRepository.findByUsername(username);
 	}
 }
