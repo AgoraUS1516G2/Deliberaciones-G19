@@ -44,7 +44,7 @@
 	</jstl:if>
 	<input type="button" name="cancel"
 		value="<spring:message code="comment.cancel" />"
-		onclick="javascript: window.location.replace('customer/listThreads.do')" />
+		onclick="javascript: window.location.replace('comment/customer/list.do')" />
 	<br />
 
 </form:form>
