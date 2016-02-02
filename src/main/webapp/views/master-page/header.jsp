@@ -36,7 +36,8 @@
 					<li class="arrow"></li>
 					
 					<li><a href="customer/listThreads.do"><spring:message code="master.page.customer.listThreads" /></a></li>		
-					<li><a href="customer/createThread.do"><spring:message code="master.page.customer.createThread" /></a></li>		
+					<li><a href="customer/createThread.do"><spring:message code="master.page.customer.createThread" /></a></li>	
+					<li><a href="comment/customer/list.do"><spring:message code="master.page.customer.listComment" /></a></li>	
 										
 				</ul>
 			</li>
