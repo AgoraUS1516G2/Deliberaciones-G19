@@ -61,6 +61,8 @@
 		<security:intercept-url pattern="/customer/saveThread.do" access="hasRole('CUSTOMER')" /> 
 		<security:intercept-url pattern="/customer/createThread.do" access="hasRole('CUSTOMER')" /> 
 		<security:intercept-url pattern="/customer/saveComment.do" access="hasRole('CUSTOMER')" /> 
+		<security:intercept-url pattern="/comment/customer/list.do" access="hasRole('CUSTOMER')" />
+		<security:intercept-url pattern="/comment/customer/edit.do" access="hasRole('CUSTOMER')" />
 		<security:intercept-url pattern="/customer/login.do" access="permitAll" /> 
 		<security:intercept-url pattern="/customer/login2.do" access="permitAll" /> 
 		
