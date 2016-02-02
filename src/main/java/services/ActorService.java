@@ -10,18 +10,22 @@ import domain.Actor;
 @Service
 @Transactional
 public class ActorService {
+
+	// Managed repository --------------------
 	@Autowired
 	private ActorRepository actorRepository;
 
-	public Collection<Actor> findAll() {
+	
+	// Simple CRUD methods ----------
+	public Actor save(Actor actor){
+		return actorRepository.save(actor);
+	}
+	
+	public Collection<Actor>  findAll(){
 		return actorRepository.findAll();
 	}
-
-	public Actor findOne(Integer valueOf) {
-		return actorRepository.findOne(valueOf);
-	}
-
-	public Actor save(Actor actor) {
-		return actorRepository.save(actor);
+	
+	public Actor findOne(int actorId) {
+		return actorRepository.findOne(actorId);
 	}
 }
