@@ -10,18 +10,26 @@ import domain.Thread;
 @Service
 @Transactional
 public class ThreadService {
+
+	// Managed repository --------------------
 	@Autowired
 	private ThreadRepository threadRepository;
 
-	public Collection<Thread> findAll() {
+	// Simple CRUD methods ----------
+	public Thread save(Hilo thread){
+		return threadRepository.save(thread);
+	}
+	
+	public Collection<Thread>  findAll(){
 		return threadRepository.findAll();
 	}
-
-	public Thread findOne(Integer valueOf) {
-		return threadRepository.findOne(valueOf);
+	
+	public Thread findOne(int threadId) {
+		return threadRepository.findOne(threadId);
 	}
-
-	public Thread save(Thread thread) {
-		return threadRepository.save(thread);
+	
+	//Other business methods -------------------
+	public Thread findThreadByComment(int commentId) {
+		return threadRepository.findThreadByComment(commentId);
 	}
 }
