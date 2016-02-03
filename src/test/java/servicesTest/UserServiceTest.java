@@ -39,7 +39,7 @@ public class UserServiceTest extends AbstractTest {
 	@Test
 	public void testFindOne() {
 		User u;
-		Integer userId = 4;
+		Integer userId = 10;
 
 		u = userService.findOne(userId);
 
@@ -51,9 +51,7 @@ public class UserServiceTest extends AbstractTest {
 	public void testSave() {
 		User u;
 
-		u = userService.findOne(4);
-
-		u.setBanned(true);
+		u = userService.findOne(10);
 
 		userService.save(u);
 
@@ -75,7 +73,7 @@ public class UserServiceTest extends AbstractTest {
 	public void testFindByUsername(){
 		User u;
 		
-		u = userService.findByUsername("customer");
+		u = userService.findByUsername("user1");
 		
 		System.out.println(u.getName());
 	}
