@@ -16,7 +16,7 @@ public class ThreadService {
 	private ThreadRepository threadRepository;
 
 	// Simple CRUD methods ----------
-	public Thread save(Hilo thread){
+	public Thread save(Thread thread){
 		return threadRepository.save(thread);
 	}
 	

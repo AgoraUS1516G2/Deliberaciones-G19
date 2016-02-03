@@ -25,7 +25,7 @@ public class User extends Actor{
 	
 	//RelationShips
 	Collection<Comment> comments;
-	Collection<Hilo> threads;
+	Collection<Thread> threads;
 
 	//Getters and Setters
 	@NotNull
@@ -70,7 +70,7 @@ public class User extends Actor{
 		return threads;
 	}
 	
-	public void setThreads(Collection<Hilo> threads) {
+	public void setThreads(Collection<Thread> threads) {
 		this.threads = threads;
 	}
 }

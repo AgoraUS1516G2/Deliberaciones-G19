@@ -34,7 +34,7 @@ public class UserService {
 	
 	//Other business methods -------------------
 	public User findByPrincipal() {
-		return userRepository.findOneByPrincipal(LoginService.getPrincipa().getId());
+		return userRepository.findOneByPrincipal(LoginService.getPrincipal().getId());
 	}
 	
 	public User findByUsername(String username) {
