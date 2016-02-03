@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 
- * PopulateDatabase.xml
- *
- * Copyright (C) 2014 Universidad de Sevilla
- * 
- * The use of this project is hereby constrained to the conditions of the 
- * TDG Licence, a copy of which you may download from 
- * http://www.tdg-seville.info/License.html
- -->
+<!-- * PopulateDatabase.xml * * Copyright (C) 2014 Universidad de Sevilla 
+	* * The use of this project is hereby constrained to the conditions of the 
+	* TDG Licence, a copy of which you may download from * http://www.tdg-seville.info/License.html -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	">
-	
 
 	<!-- User accounts -->
 
@@ -84,6 +77,20 @@
 	
 	<!-- Other domain beans come here -->	
 	
+	<!-- Bans -->
+	
+	<bean id="ban1" class="domain.Ban">
+	<property name="banned" value="false"/>
+	</bean>
+	
+	<bean id="ban2" class="domain.Ban">
+	<property name="banned" value="true"/>
+	</bean>
+	
+	<bean id="ban3" class="domain.Ban">
+	<property name="banned" value="false"/>
+	</bean>
+	
 	<!-- Administrator  -->
 	<bean id="admin" class="domain.Administrator">
 		<property name="name" value="NombreAdmin"/>
@@ -101,9 +108,9 @@
 		<property name="email" value="user1@gmail.com"/>
 		<property name="location" value="Sevilla"/>
 		<property name="userAccount" ref="userAccount2" />
-		<property name="banned" value="false"/>
 		<property name="numberOfMessages" value="0"/>
 		<property name="url" value="www.google.es"/>
+		<property name="ban" ref="ban1"/>
 		<property name="threads">
 		<list>
 			 <ref bean="thread1" />
@@ -116,16 +123,15 @@
 		</property>
 	</bean>
 	
-	
 	<bean id="user2" class="domain.User">
 		<property name="name" value="NombreUs2"/>
 		<property name="surname" value="ApellidoUs2"/>
 		<property name="email" value="user2@gmail.com"/>
 		<property name="location" value="Sevilla"/>
 		<property name="userAccount" ref="userAccount4" />
-		<property name="banned" value="false"/>
 		<property name="numberOfMessages" value="0"/>
 		<property name="url" value="www.google.es"/>
+		<property name="ban" ref="ban2"/>
 		<property name="threads">
 		<list>
 		</list>
@@ -144,9 +150,9 @@
 		<property name="email" value="user3@gmail.com"/>
 		<property name="location" value="Sevilla"/>
 		<property name="userAccount" ref="userAccount5" />
-		<property name="banned" value="false"/>
 		<property name="numberOfMessages" value="0"/>
 		<property name="url" value="www.google.es"/>
+		<property name="ban" ref="ban3"/>
 		<property name="threads">
 		<list>
 			 <ref bean="thread2" />
@@ -215,6 +221,7 @@
 	<property name="thread" ref="thread1"/>
 	</bean>
 	
+
 	<bean id="comment4" class="domain.Comment">
 	<property name="text" value="texto4"/>
 	<property name="creationMoment" value="14/11/2004 12:12"/>
@@ -235,4 +242,5 @@
 	<property name="user" ref="user3"/>
 	<property name="thread" ref="thread2"/>
 	</bean>
+
 </beans>
