@@ -177,6 +177,7 @@
 	</property>
 	</bean>
 	
+
 	<bean id="thread2" class="domain.Thread">
 	<property name="title" value="titulo2"/>
 	<property name="creationMoment" value="12/11/2004 12:12"/>

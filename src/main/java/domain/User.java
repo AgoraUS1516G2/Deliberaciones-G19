@@ -69,7 +69,7 @@ public class User extends Actor{
 	public Collection<Thread> getThreads() {
 		return threads;
 	}
-	
+
 	public void setThreads(Collection<Thread> threads) {
 		this.threads = threads;
 	}
