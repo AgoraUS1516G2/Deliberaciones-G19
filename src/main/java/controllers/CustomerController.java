@@ -10,6 +10,8 @@
 
 package controllers;
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,6 +21,7 @@ import java.util.Date;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.JOptionPane;
 import javax.validation.Valid;
 
 import org.codehaus.jackson.JsonParseException;
@@ -40,6 +43,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+
+import domain.CensusUser;
+import domain.Comment;
+import domain.Thread;
+import domain.Token;
+import domain.User;
 import security.Authority;
 import security.LoginService;
 import security.UserAccount;
@@ -78,11 +87,13 @@ public class CustomerController extends AbstractController {
 	 */
 
 	@RequestMapping("/createThreadFromVotacion")
+
 	public ModelAndView createTreadFromVotacion(String title, int id) {
 
 		User user = userService.findByUsername("customer");
 
 		Thread hilo = new Thread();
+
 		hilo.setCreationMoment(new Date());
 		hilo.setText("Hilo sobre la votación: " + title);
 		hilo.setUser(user);
@@ -125,6 +136,7 @@ public class CustomerController extends AbstractController {
 
 		result = new ModelAndView("customer/listThreads");
 		result.addObject("threads", threads);
+
 		return result;
 
 	}
@@ -158,17 +170,23 @@ public class CustomerController extends AbstractController {
 
 			result = seeThread(comment.getThread().getId());
 			System.out.println(binding.toString());
-
-		} else {
-			try {
-				commentService.save(comment);
-				result = seeThread(comment.getThread().getId());
-				// debemos comprobar si se guarda o no para guardar tambien el
-				// hilo
-			} catch (Throwable op) {
-				result = seeThread(comment.getThread().getId());
+			
+		}else{
+			UserAccount ua = LoginService.getPrincipal();
+			User x = userService.findByUsername(ua.getUsername());
+			if(x.getBan().getBanned() == false){
+			try{
+			commentService.save(comment);
+			result=seeThread(comment.getThread().getId());
+			//debemos comprobar si se guarda o no para guardar tambien el hilo
+			}catch(Throwable op){
+				result=seeThread(comment.getThread().getId());
 				op.printStackTrace();
 
+			}
+
+			}else{
+				JOptionPane.showMessageDialog(null,"Estás baneado y no puedes comentar aquí"); 
 			}
 
 		}
@@ -197,30 +215,29 @@ public class CustomerController extends AbstractController {
 	}
 
 	@RequestMapping("/saveThread")
-	public ModelAndView saveThread(
-			@ModelAttribute("thread") @Valid Thread thread,
-			BindingResult binding) {
-
+	public ModelAndView saveThread(@ModelAttribute("thread") @Valid Thread thread, BindingResult binding){
+		UserAccount ua = LoginService.getPrincipal();
+		User x = userService.findByUsername(ua.getUsername());
 		ModelAndView result = null;
-		if (binding.hasErrors()) {
-			result = createEditModelAndView(thread);
-
+		if(x.getBan().getBanned()!=true){
+		if(binding.hasErrors()){
+			result=createEditModelAndView(thread);
+			
 			System.out.println(binding.toString());
-		} else {
-
-			try {
-
+		}else{
+			try{	
 				threadService.save(thread);
-				result = new ModelAndView("redirect:listThreads.do");
-			} catch (Throwable opps) {
-
-				result = createEditModelAndView(thread, "Transactional error");
-
+				result=new ModelAndView("redirect:listThreads.do");
+			}catch(Throwable opps){
+				result=createEditModelAndView(thread, "Transactional error");
 			}
-
 		}
-
 		return result;
+		}else{
+			JOptionPane.showMessageDialog(null,"Estás baneado y no puedes comentar aquí");
+			result=new ModelAndView("redirect:listThreads.do");
+			return result;
+		}
 	}
 
 	@RequestMapping("/deleteThread")
@@ -387,14 +404,13 @@ public class CustomerController extends AbstractController {
 			userAccount.addAuthority(a);
 			user.setName(username);
 			user.setUserAccount(userAccount);
-			user.setBanned(false);
+			//user.setBanned(false);
 			user.setEmail("user@mail");
 			user.setLocation("location2");
 			user.setNumberOfMessages(0);
 			user.setSurname("usernameSurnam");
 			user.setComments(new ArrayList<Comment>());
 			user.setThreads(new ArrayList<Thread>());
-
 			userService.save(user);
 			loginMakeFromCensus(userAccount, httpRequest);
 
@@ -521,14 +537,12 @@ public class CustomerController extends AbstractController {
 					userAccount.addAuthority(a);
 					user2.setName(user.getUsername());
 					user2.setUserAccount(userAccount);
-					user2.setBanned(false);
 					user2.setEmail("user@mail");
 					user2.setLocation("location2");
 					user2.setNumberOfMessages(0);
 					user2.setSurname("usernameSurnam");
 					user2.setComments(new ArrayList<Comment>());
 					user2.setThreads(new ArrayList<Thread>());
-
 					userService.save(user2);
 
 				}
@@ -658,14 +672,13 @@ public class CustomerController extends AbstractController {
 					userAccount.addAuthority(a);
 					user2.setName(user.getUsername());
 					user2.setUserAccount(userAccount);
-					user2.setBanned(false);
+					//user2.setBanned(false);
 					user2.setEmail("user@mail");
 					user2.setLocation("location2");
 					user2.setNumberOfMessages(0);
 					user2.setSurname("usernameSurnam");
 					user2.setComments(new ArrayList<Comment>());
 					user2.setThreads(new ArrayList<Thread>());
-
 					userService.save(user2);
 
 				}
@@ -708,14 +721,16 @@ public class CustomerController extends AbstractController {
 
 	}
 
-	private ModelAndView createEditModelAndView(domain.Thread thread) {
-
+	
+	private ModelAndView createEditModelAndView(domain.Thread thread){
+		
+		
 		return createEditModelAndView(thread, null);
 	}
-
-	private ModelAndView createEditModelAndView(domain.Thread thread,
-			String message) {
-
+	
+	private ModelAndView createEditModelAndView(domain.Thread thread, String message){
+		
+		
 		ModelAndView result;
 
 		if (thread.getUser() == null) {// NUEVO

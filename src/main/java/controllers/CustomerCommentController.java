@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import domain.Comment;
 import domain.User;
 
+import security.LoginService;
 import services.ActorService;
 import services.CommentService;
 import services.ThreadService;
@@ -50,7 +51,6 @@ public class CustomerCommentController extends AbstractController{
         
         Collection<Comment> comments;
         User user;
-
         user = userService.findByPrincipal();
         comments = commentService.findCommentByUser(user);
 
