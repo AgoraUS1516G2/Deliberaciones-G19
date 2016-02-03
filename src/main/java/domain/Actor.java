@@ -68,7 +68,7 @@ public class Actor extends DomainEntity{
 		this.location = location;
 	}
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.ALL, optional=false)
 	@NotNull
 	public UserAccount getUserAccount() {
 		return userAccount;

@@ -5,6 +5,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.SafeHtml;
@@ -13,8 +14,6 @@ import org.hibernate.validator.constraints.SafeHtml;
 @Access(AccessType.PROPERTY)
 public class User extends Actor{
 	
-	//Atributtes
-	private boolean banned;
 	private int numberOfMessages;
 	private String url;
 	
@@ -23,19 +22,6 @@ public class User extends Actor{
 		super();
 	}
 	
-	//RelationShips
-	Collection<Comment> comments;
-	Collection<Thread> threads;
-
-	//Getters and Setters
-	@NotNull
-	public boolean isBanned() {
-		return banned;
-	}
-	
-	public void setBanned(boolean banned) {
-		this.banned = banned;
-	}
 	
 	public int getNumberOfMessages() {
 		return numberOfMessages;
@@ -54,6 +40,17 @@ public class User extends Actor{
 		this.url = url;
 	}
 	
+	
+	//relationShips
+	
+	
+
+	private Collection<Comment> comments;
+	private Collection<Thread> threads;
+	private Ban ban;
+
+	
+
 	@NotNull
 	@OneToMany(mappedBy="user")
 	public Collection<Comment> getComments() {
@@ -73,4 +70,15 @@ public class User extends Actor{
 	public void setThreads(Collection<Thread> threads) {
 		this.threads = threads;
 	}
+	
+	@NotNull
+	@OneToOne(optional = false)
+	public Ban getBan() {
+		return ban;
+	}
+	public void setBan(Ban ban) {
+		this.ban = ban;
+	}
+	
+	
 }
