@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -79,8 +80,11 @@ public class CustomerCommentController extends AbstractController{
     public ModelAndView edit(@RequestParam int commentId){
         ModelAndView result;
         Comment comment;
-          
+        User user;
+        
+        user= userService.findByPrincipal();
         comment = commentService.findOne(commentId);
+        Assert.isTrue(comment.getUser().equals(user));
         result= createEditModelAndView(comment);
           
         return result;
