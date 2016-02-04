@@ -73,7 +73,7 @@ pagesize="5" class="displaytag" >
 <form:hidden path="thread"/>
 
 
-<acme:textbox code="customer.deliberations.text" path="text"/>
+<acme:textarea code="customer.deliberations.text" path="text"/>
 <acme:submit name="save" code="customer.submit"/>
 
 
