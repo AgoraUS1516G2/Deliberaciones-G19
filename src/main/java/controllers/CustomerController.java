@@ -10,11 +10,6 @@
 
 package controllers;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -24,42 +19,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.swing.JOptionPane;
 import javax.validation.Valid;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-
-import domain.CensusUser;
+import domain.Administrator;
 import domain.Comment;
 import domain.Thread;
-import domain.Token;
 import domain.User;
 import security.Authority;
 import security.LoginService;
 import security.UserAccount;
+import services.AdministratorService;
 import services.CommentService;
 import services.ThreadService;
 import services.UserService;
-import domain.CensusUser;
-import domain.Comment;
-import domain.Thread;
-import domain.Token;
-import domain.User;
 
 @Controller
 @RequestMapping("/customer")
@@ -75,6 +58,8 @@ public class CustomerController extends AbstractController {
 	LoginService loginService;
 	@Autowired
 	UserDetailsService userDetailsService;
+	@Autowired
+	private AdministratorService administratorService;
 
 	// Constructors -----------------------------------------------------------
 
@@ -87,16 +72,15 @@ public class CustomerController extends AbstractController {
 	 */
 
 	@RequestMapping("/createThreadFromVotacion")
-
 	public ModelAndView createTreadFromVotacion(String title, int id) {
 
-		User user = userService.findByUsername("customer");
+		Administrator admin = administratorService.findByUsername("admin");
 
 		Thread hilo = new Thread();
 
 		hilo.setCreationMoment(new Date());
 		hilo.setText("Hilo sobre la votación: " + title);
-		hilo.setUser(user);
+		hilo.setAdministrator(admin);
 		hilo.setTitle(title);
 		hilo.setCensusId(id);
 		hilo.setComments(new ArrayList<Comment>());
@@ -170,84 +154,30 @@ public class CustomerController extends AbstractController {
 
 			result = seeThread(comment.getThread().getId());
 			System.out.println(binding.toString());
-			
-		}else{
+
+		} else {
 			UserAccount ua = LoginService.getPrincipal();
 			User x = userService.findByUsername(ua.getUsername());
-			if(x.getBan().getBanned() == false){
-			try{
-			commentService.save(comment);
-			result=seeThread(comment.getThread().getId());
-			//debemos comprobar si se guarda o no para guardar tambien el hilo
-			}catch(Throwable op){
-				result=seeThread(comment.getThread().getId());
-				op.printStackTrace();
+			if (x.getBan().getBanned() == false) {
+				try {
+					commentService.save(comment);
+					result = seeThread(comment.getThread().getId());
+					// debemos comprobar si se guarda o no para guardar tambien
+					// el hilo
+				} catch (Throwable op) {
+					result = seeThread(comment.getThread().getId());
+					op.printStackTrace();
 
-			}
+				}
 
-			}else{
-				JOptionPane.showMessageDialog(null,"Estás baneado y no puedes comentar aquí"); 
+			} else {
+				JOptionPane.showMessageDialog(null,
+						"Estás baneado y no puedes comentar aquí");
 			}
 
 		}
 
 		return result;
-
-	}
-
-	@RequestMapping("/createThread")
-	public ModelAndView createThread() {
-
-		ModelAndView result = createEditModelAndView(new domain.Thread());
-
-		return result;
-
-	}
-
-	@RequestMapping("/editThread")
-	public ModelAndView editThread(@RequestParam int id) {
-		Thread thread = threadService.findOne(id);
-
-		ModelAndView result = createEditModelAndView(thread);
-
-		return result;
-
-	}
-
-	@RequestMapping("/saveThread")
-	public ModelAndView saveThread(@ModelAttribute("thread") @Valid Thread thread, BindingResult binding){
-		UserAccount ua = LoginService.getPrincipal();
-		User x = userService.findByUsername(ua.getUsername());
-		ModelAndView result = null;
-		if(x.getBan().getBanned()!=true){
-		if(binding.hasErrors()){
-			result=createEditModelAndView(thread);
-			
-			System.out.println(binding.toString());
-		}else{
-			try{	
-				threadService.save(thread);
-				result=new ModelAndView("redirect:listThreads.do");
-			}catch(Throwable opps){
-				result=createEditModelAndView(thread, "Transactional error");
-			}
-		}
-		return result;
-		}else{
-			JOptionPane.showMessageDialog(null,"Estás baneado y no puedes comentar aquí");
-			result=new ModelAndView("redirect:listThreads.do");
-			return result;
-		}
-	}
-
-	@RequestMapping("/deleteThread")
-	public ModelAndView deleteThread(@RequestParam int id) {
-
-		Thread thread = threadService.findOne(id);
-
-		// to do
-
-		return new ModelAndView("customer/deleteThread");
 
 	}
 
@@ -325,102 +255,82 @@ public class CustomerController extends AbstractController {
 	// we are to trust the username census give us is unique
 	// if the person is present in the bd, log in the context
 
-	@RequestMapping("/loginFromCensus")
-	public ModelAndView loginFromCensus(String username,
-			HttpServletRequest httpRequest) throws JsonParseException,
-			JsonMappingException, IOException {
-
-		// implementar
-		ModelAndView result;
-
-		System.out.println(username);
-
-		// find in the census with json
-
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		// Document
-		// doc=Jsoup.connect("http://localhost:8080/ADMCensus/census/json_one_user.do?votacion_id=1&username="+username).get();
-		// System.out.println(doc.toString());
-
-		// si da error, es que el usuario no esta en el censo
-		CensusUser censusUser = null;
-		String nameFinal = "";
-		try {
-			// censusUser=objectMapper.readValue(new
-			// URL("http://localhost:8080/ADMCensus/census/json_one_user.do?votacion_id=1&username="+username),CensusUser.class);
-
-			try {
-				censusUser = objectMapper
-						.readValue(
-								new URL(
-										"http://localhost:8080/ADMCensus/census/findCensusByVote.do?idVotacion=" + 1),
-								CensusUser.class);
-			} catch (JsonParseException e) {
-				System.out.println(e.toString());
-				return loginFromCensusFrom();
-			}
-			System.out.println(censusUser.toString());
-			Assert.isTrue(censusUser.getUsername() != null);
-
-			for (String name : censusUser.getVoto_por_usuario().keySet()) {
-
-				if (name.equals(username)) {
-
-					nameFinal = name;
-				}
-
-			}
-
-		} catch (Exception e) {
-
-			return loginFromCensusFrom();
-		}
-
-		// si no, procedemos
-
-		if (nameFinal.equals("")) {
-
-			return loginFromCensusFrom();
-		} else if (userService.findByUsername(nameFinal) != null) {// esta en la
-																	// base de
-																	// datos
-
-			// nos marcamos el login
-			loginMakeFromCensus(userService.findByUsername(username)
-					.getUserAccount(), httpRequest);
-
-			result = new ModelAndView("customer/listThreads");
-
-		} else {// no esta, lo registramos
-
-			User user = new User();
-			UserAccount userAccount = new UserAccount();
-			Authority a = new Authority();
-			a.setAuthority("CUSTOMER");
-			userAccount.setUsername(username);
-			userAccount.setPassword(new Md5PasswordEncoder().encodePassword(
-					username, null));
-			userAccount.addAuthority(a);
-			user.setName(username);
-			user.setUserAccount(userAccount);
-			//user.setBanned(false);
-			user.setEmail("user@mail");
-			user.setLocation("location2");
-			user.setNumberOfMessages(0);
-			user.setSurname("usernameSurnam");
-			user.setComments(new ArrayList<Comment>());
-			user.setThreads(new ArrayList<Thread>());
-			userService.save(user);
-			loginMakeFromCensus(userAccount, httpRequest);
-
-			result = new ModelAndView("customer/listThreads");
-
-		}
-
-		return result;
-	}
-
+	/*
+	 * @RequestMapping("/loginFromCensus") public ModelAndView
+	 * loginFromCensus(String username, HttpServletRequest httpRequest) throws
+	 * JsonParseException, JsonMappingException, IOException {
+	 * 
+	 * // implementar ModelAndView result;
+	 * 
+	 * System.out.println(username);
+	 * 
+	 * // find in the census with json
+	 * 
+	 * ObjectMapper objectMapper = new ObjectMapper();
+	 * 
+	 * // Document // doc=Jsoup.connect(
+	 * "http://localhost:8080/ADMCensus/census/json_one_user.do?votacion_id=1&username="
+	 * +username).get(); // System.out.println(doc.toString());
+	 * 
+	 * // si da error, es que el usuario no esta en el censo CensusUser
+	 * censusUser = null; String nameFinal = ""; try { //
+	 * censusUser=objectMapper.readValue(new // URL(
+	 * "http://localhost:8080/ADMCensus/census/json_one_user.do?votacion_id=1&username="
+	 * +username),CensusUser.class);
+	 * 
+	 * try { censusUser = objectMapper .readValue( new URL(
+	 * "http://localhost:8080/ADMCensus/census/findCensusByVote.do?idVotacion="
+	 * + 1), CensusUser.class); } catch (JsonParseException e) {
+	 * System.out.println(e.toString()); return loginFromCensusFrom(); }
+	 * System.out.println(censusUser.toString());
+	 * Assert.isTrue(censusUser.getUsername() != null);
+	 * 
+	 * for (String name : censusUser.getVoto_por_usuario().keySet()) {
+	 * 
+	 * if (name.equals(username)) {
+	 * 
+	 * nameFinal = name; }
+	 * 
+	 * }
+	 * 
+	 * } catch (Exception e) {
+	 * 
+	 * return loginFromCensusFrom(); }
+	 * 
+	 * // si no, procedemos
+	 * 
+	 * if (nameFinal.equals("")) {
+	 * 
+	 * return loginFromCensusFrom(); } else if
+	 * (userService.findByUsername(nameFinal) != null) {// esta en la // base de
+	 * // datos
+	 * 
+	 * // nos marcamos el login
+	 * loginMakeFromCensus(userService.findByUsername(username)
+	 * .getUserAccount(), httpRequest);
+	 * 
+	 * result = new ModelAndView("customer/listThreads");
+	 * 
+	 * } else {// no esta, lo registramos
+	 * 
+	 * User user = new User(); UserAccount userAccount = new UserAccount();
+	 * Authority a = new Authority(); a.setAuthority("CUSTOMER");
+	 * userAccount.setUsername(username); userAccount.setPassword(new
+	 * Md5PasswordEncoder().encodePassword( username, null));
+	 * userAccount.addAuthority(a); user.setName(username);
+	 * user.setUserAccount(userAccount); //user.setBanned(false);
+	 * user.setEmail("user@mail"); user.setLocation("location2");
+	 * user.setNumberOfMessages(0); user.setSurname("usernameSurnam");
+	 * user.setComments(new ArrayList<Comment>()); user.setThreads(new
+	 * ArrayList<Thread>()); userService.save(user);
+	 * loginMakeFromCensus(userAccount, httpRequest);
+	 * 
+	 * result = new ModelAndView("customer/listThreads");
+	 * 
+	 * }
+	 * 
+	 * return result; }
+	 */
 	@RequestMapping("loginFromCensusForm")
 	public ModelAndView loginFromCensusFrom() {
 
@@ -432,7 +342,7 @@ public class CustomerController extends AbstractController {
 		try {
 			// Must be called from request filtered by Spring Security,
 			// otherwise SecurityContextHolder is not updated
-			Md5PasswordEncoder md5 = new Md5PasswordEncoder();
+			//Md5PasswordEncoder md5 = new Md5PasswordEncoder();
 			System.out.println(request.toString());
 			System.out.println("contraseña pepe de base de datos: "
 					+ user.getPassword());
@@ -451,313 +361,247 @@ public class CustomerController extends AbstractController {
 		}
 
 	}
-
-	@RequestMapping("/loginMake")
-	public ModelAndView loginMake(@Valid UserAccount user,
-			BindingResult bindingResult, HttpServletRequest request) {
-
-		ModelAndView result = null;
-
-		if (bindingResult.hasErrors()) {
-
-			result = login();
-			System.out.println(bindingResult.toString());
-
-		}
-
-		// primero, debemos ver si esta logeado en el sistema mediante el token
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		Token resultOfToken = new Token();
-		// para generar el token se envia el password con md5
-		String passwordMd5 = new Md5PasswordEncoder().encodePassword(
-				user.getPassword(), null);
-		// depues se vuelve a calcular el md5 del password + nombre de usario
-		// antes
-		passwordMd5 = user.getUsername()
-				+ new Md5PasswordEncoder().encodePassword(passwordMd5, null);
-		// despues de vuelve a calcular el md5 y se le añade el nombre mas dos
-		// puntos
-		passwordMd5 = user.getUsername() + ":"
-				+ new Md5PasswordEncoder().encodePassword(passwordMd5, null);
-		String tokenToVerify = passwordMd5;
-		System.out.println("el token para comprobar es: " + tokenToVerify);
-		try {
-			resultOfToken = objectMapper.readValue(new URL(
-					"http://localhost/auth/api/checkToken?token="
-							+ tokenToVerify), domain.Token.class);
-			System.out.println("el resultado de autenticación es: "
-					+ resultOfToken.isValid());
-
-		} catch (JsonParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (JsonMappingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		if (resultOfToken.isValid()) {// el usuario esta logueado en
-										// autenticación, debemos de loguearlo
-										// aqui
-
-			if (!(bindingResult.hasErrors()) || bindingResult == null) {
-				Md5PasswordEncoder md5 = new Md5PasswordEncoder();
-				// System.out.println("password encodeado de customer: "+md5.encodePassword(user.getPassword(),
-				// null));
-				// System.out.println("password de base de datos cust: "+userService.findByPrincipal());
-				try {
-					String passDB = loginService.loadUserByUsername(
-							user.getUsername()).getPassword();
-					String passForm = md5.encodePassword(user.getPassword(),
-							null);
-					System.out.println(passDB);
-					System.out.println(passForm);
-					Assert.isTrue(loginService
-							.loadUserByUsername(user.getUsername())
-							.getPassword()
-							.equals(md5.encodePassword(user.getPassword(), null)));
-				} catch (Exception e) {
-					System.out.println(e.toString());
-					// no esta en la base de datos, lo creamos en entonces:
-
-					User user2 = new User();
-					UserAccount userAccount = new UserAccount();
-					Authority a = new Authority();
-					a.setAuthority("CUSTOMER");
-					userAccount.setUsername(user.getUsername());
-					userAccount.setPassword(new Md5PasswordEncoder()
-							.encodePassword(user.getPassword(), null));
-					userAccount.addAuthority(a);
-					user2.setName(user.getUsername());
-					user2.setUserAccount(userAccount);
-					user2.setEmail("user@mail");
-					user2.setLocation("location2");
-					user2.setNumberOfMessages(0);
-					user2.setSurname("usernameSurnam");
-					user2.setComments(new ArrayList<Comment>());
-					user2.setThreads(new ArrayList<Thread>());
-					userService.save(user2);
-
-				}
-
-				try {
-					// Must be called from request filtered by Spring Security,
-					// otherwise SecurityContextHolder is not updated
-
-					System.out.println(request.toString());
-
-					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-							user.getUsername(), md5.encodePassword(
-									user.getPassword(), null));
-					token.setDetails(new WebAuthenticationDetails(request));
-					DaoAuthenticationProvider authenticator = new DaoAuthenticationProvider();
-					authenticator.setUserDetailsService(userDetailsService);
-
-					Authentication authentication = authenticator
-							.authenticate(token);
-					SecurityContextHolder.getContext().setAuthentication(
-							authentication);
-				} catch (Exception e) {
-					e.printStackTrace();
-					SecurityContextHolder.getContext().setAuthentication(null);
-				}
-
-				result = new ModelAndView("customer/listThreads");
-
-			}
-
-		} else {// no esta logueado, a tomar por el fonete
-
-			result = login();
-
-		}
-
-		// depues ya podemos loguearlo en el sistema nuestro
-
-		return result;
-
-	}
-
-	// login from cookies
-
-	@RequestMapping("/loginMake2")
-	public ModelAndView loginMake2(@Valid UserAccount user,
-			BindingResult bindingResult, HttpServletRequest request) {
-
-		ModelAndView result = null;
-
-		if (bindingResult.hasErrors()) {
-
-			result = login();
-			System.out.println(bindingResult.toString());
-
-		}
-
-		// primero, debemos ver si esta logeado en el sistema mediante el token
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		Token resultOfToken = new Token();
-		// para generar el token se envia el password con md5
-		String passwordMd5 = new Md5PasswordEncoder().encodePassword(
-				user.getPassword(), null);
-		// depues se vuelve a calcular el md5 del password + nombre de usario
-		// antes
-		passwordMd5 = user.getUsername()
-				+ new Md5PasswordEncoder().encodePassword(passwordMd5, null);
-		// despues de vuelve a calcular el md5 y se le añade el nombre mas dos
-		// puntos
-		passwordMd5 = user.getUsername() + ":"
-				+ new Md5PasswordEncoder().encodePassword(passwordMd5, null);
-		String tokenToVerify = passwordMd5;
-		System.out.println("el token para comprobar es: " + tokenToVerify);
-		try {
-			resultOfToken = objectMapper.readValue(new URL(
-					"http://localhost/auth/api/checkToken?token="
-							+ tokenToVerify), domain.Token.class);
-			System.out.println("el resultado de autenticación es: "
-					+ resultOfToken.isValid());
-
-		} catch (JsonParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (JsonMappingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		if (resultOfToken.isValid()) {// el usuario esta logueado en
-										// autenticación, debemos de loguearlo
-										// aqui
-
-			if (!(bindingResult.hasErrors()) || bindingResult == null) {
-				Md5PasswordEncoder md5 = new Md5PasswordEncoder();
-				// System.out.println("password encodeado de customer: "+md5.encodePassword(user.getPassword(),
-				// null));
-				// System.out.println("password de base de datos cust: "+userService.findByPrincipal());
-				try {
-					String passDB = loginService.loadUserByUsername(
-							user.getUsername()).getPassword();
-					String passForm = md5.encodePassword(user.getPassword(),
-							null);
-					System.out.println(passDB);
-					System.out.println(passForm);
-					Assert.isTrue(loginService
-							.loadUserByUsername(user.getUsername())
-							.getPassword()
-							.equals(md5.encodePassword(user.getPassword(), null)));
-				} catch (Exception e) {
-					System.out.println(e.toString());
-					// no esta en la base de datos, lo creamos en entonces:
-
-					User user2 = new User();
-					UserAccount userAccount = new UserAccount();
-					Authority a = new Authority();
-					a.setAuthority("CUSTOMER");
-					userAccount.setUsername(user.getUsername());
-					userAccount.setPassword(new Md5PasswordEncoder()
-							.encodePassword(user.getPassword(), null));
-					userAccount.addAuthority(a);
-					user2.setName(user.getUsername());
-					user2.setUserAccount(userAccount);
-					//user2.setBanned(false);
-					user2.setEmail("user@mail");
-					user2.setLocation("location2");
-					user2.setNumberOfMessages(0);
-					user2.setSurname("usernameSurnam");
-					user2.setComments(new ArrayList<Comment>());
-					user2.setThreads(new ArrayList<Thread>());
-					userService.save(user2);
-
-				}
-
-				try {
-					// Must be called from request filtered by Spring Security,
-					// otherwise SecurityContextHolder is not updated
-
-					System.out.println(request.toString());
-
-					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-							user.getUsername(), md5.encodePassword(
-									user.getPassword(), null));
-					token.setDetails(new WebAuthenticationDetails(request));
-					DaoAuthenticationProvider authenticator = new DaoAuthenticationProvider();
-					authenticator.setUserDetailsService(userDetailsService);
-
-					Authentication authentication = authenticator
-							.authenticate(token);
-					SecurityContextHolder.getContext().setAuthentication(
-							authentication);
-				} catch (Exception e) {
-					e.printStackTrace();
-					SecurityContextHolder.getContext().setAuthentication(null);
-				}
-
-				result = new ModelAndView("customer/listThreads");
-
-			}
-
-		} else {// no esta logueado, a tomar por el fonete
-
-			result = login();
-
-		}
-
-		// depues ya podemos loguearlo en el sistema nuestro
-
-		return result;
-
-	}
-
-	
-	private ModelAndView createEditModelAndView(domain.Thread thread){
-		
-		
-		return createEditModelAndView(thread, null);
-	}
-	
-	private ModelAndView createEditModelAndView(domain.Thread thread, String message){
-		
-		
-		ModelAndView result;
-
-		if (thread.getUser() == null) {// NUEVO
-
-			thread.setUser(userService.findByPrincipal());
-			thread.setCreationMoment(new Date());// necesario para la
-													// restricción de fecha de
-													// creación
-			result = new ModelAndView("customer/editThread");
-			result.addObject("user", thread.getUser());
-			result.addObject("thread", thread);
-
-		} else {
-
-			User user = thread.getUser();
-
-			result = new ModelAndView("customer/editThread");
-
-			result.addObject("thread", thread);
-			result.addObject("user", user);
-
-		}
-
-		return result;
-
-	}
-
+	/*
+	 * @RequestMapping("/loginMake") public ModelAndView loginMake(@Valid
+	 * UserAccount user, BindingResult bindingResult, HttpServletRequest
+	 * request) {
+	 * 
+	 * ModelAndView result = null;
+	 * 
+	 * if (bindingResult.hasErrors()) {
+	 * 
+	 * result = login(); System.out.println(bindingResult.toString());
+	 * 
+	 * }
+	 * 
+	 * // primero, debemos ver si esta logeado en el sistema mediante el token
+	 * ObjectMapper objectMapper = new ObjectMapper();
+	 * 
+	 * Token resultOfToken = new Token(); // para generar el token se envia el
+	 * password con md5 String passwordMd5 = new
+	 * Md5PasswordEncoder().encodePassword( user.getPassword(), null); // depues
+	 * se vuelve a calcular el md5 del password + nombre de usario // antes
+	 * passwordMd5 = user.getUsername() + new
+	 * Md5PasswordEncoder().encodePassword(passwordMd5, null); // despues de
+	 * vuelve a calcular el md5 y se le añade el nombre mas dos // puntos
+	 * passwordMd5 = user.getUsername() + ":" + new
+	 * Md5PasswordEncoder().encodePassword(passwordMd5, null); String
+	 * tokenToVerify = passwordMd5;
+	 * System.out.println("el token para comprobar es: " + tokenToVerify); try {
+	 * resultOfToken = objectMapper.readValue(new URL(
+	 * "http://localhost/auth/api/checkToken?token=" + tokenToVerify),
+	 * domain.Token.class);
+	 * System.out.println("el resultado de autenticación es: " +
+	 * resultOfToken.isValid());
+	 * 
+	 * } catch (JsonParseException e1) { // TODO Auto-generated catch block
+	 * e1.printStackTrace(); } catch (JsonMappingException e1) { // TODO
+	 * Auto-generated catch block e1.printStackTrace(); } catch
+	 * (MalformedURLException e1) { // TODO Auto-generated catch block
+	 * e1.printStackTrace(); } catch (IOException e1) { // TODO Auto-generated
+	 * catch block e1.printStackTrace(); }
+	 * 
+	 * if (resultOfToken.isValid()) {// el usuario esta logueado en //
+	 * autenticación, debemos de loguearlo // aqui
+	 * 
+	 * if (!(bindingResult.hasErrors()) || bindingResult == null) {
+	 * Md5PasswordEncoder md5 = new Md5PasswordEncoder(); //
+	 * System.out.println("password encodeado de customer: "
+	 * +md5.encodePassword(user.getPassword(), // null)); //
+	 * System.out.println("password de base de datos cust: "
+	 * +userService.findByPrincipal()); try { String passDB =
+	 * loginService.loadUserByUsername( user.getUsername()).getPassword();
+	 * String passForm = md5.encodePassword(user.getPassword(), null);
+	 * System.out.println(passDB); System.out.println(passForm);
+	 * Assert.isTrue(loginService .loadUserByUsername(user.getUsername())
+	 * .getPassword() .equals(md5.encodePassword(user.getPassword(), null))); }
+	 * catch (Exception e) { System.out.println(e.toString()); // no esta en la
+	 * base de datos, lo creamos en entonces:
+	 * 
+	 * User user2 = new User(); UserAccount userAccount = new UserAccount();
+	 * Authority a = new Authority(); a.setAuthority("CUSTOMER");
+	 * userAccount.setUsername(user.getUsername()); userAccount.setPassword(new
+	 * Md5PasswordEncoder() .encodePassword(user.getPassword(), null));
+	 * userAccount.addAuthority(a); user2.setName(user.getUsername());
+	 * user2.setUserAccount(userAccount); user2.setEmail("user@mail");
+	 * user2.setLocation("location2"); user2.setNumberOfMessages(0);
+	 * user2.setSurname("usernameSurnam"); user2.setComments(new
+	 * ArrayList<Comment>()); user2.setThreads(new ArrayList<Thread>());
+	 * userService.save(user2);
+	 * 
+	 * }
+	 * 
+	 * try { // Must be called from request filtered by Spring Security, //
+	 * otherwise SecurityContextHolder is not updated
+	 * 
+	 * System.out.println(request.toString());
+	 * 
+	 * UsernamePasswordAuthenticationToken token = new
+	 * UsernamePasswordAuthenticationToken( user.getUsername(),
+	 * md5.encodePassword( user.getPassword(), null)); token.setDetails(new
+	 * WebAuthenticationDetails(request)); DaoAuthenticationProvider
+	 * authenticator = new DaoAuthenticationProvider();
+	 * authenticator.setUserDetailsService(userDetailsService);
+	 * 
+	 * Authentication authentication = authenticator .authenticate(token);
+	 * SecurityContextHolder.getContext().setAuthentication( authentication); }
+	 * catch (Exception e) { e.printStackTrace();
+	 * SecurityContextHolder.getContext().setAuthentication(null); }
+	 * 
+	 * result = new ModelAndView("customer/listThreads");
+	 * 
+	 * }
+	 * 
+	 * } else {// no esta logueado, a tomar por el fonete
+	 * 
+	 * result = login();
+	 * 
+	 * }
+	 * 
+	 * // depues ya podemos loguearlo en el sistema nuestro
+	 * 
+	 * return result;
+	 * 
+	 * }
+	 * 
+	 * // login from cookies
+	 * 
+	 * @RequestMapping("/loginMake2") public ModelAndView loginMake2(@Valid
+	 * UserAccount user, BindingResult bindingResult, HttpServletRequest
+	 * request) {
+	 * 
+	 * ModelAndView result = null;
+	 * 
+	 * if (bindingResult.hasErrors()) {
+	 * 
+	 * result = login(); System.out.println(bindingResult.toString());
+	 * 
+	 * }
+	 * 
+	 * // primero, debemos ver si esta logeado en el sistema mediante el token
+	 * ObjectMapper objectMapper = new ObjectMapper();
+	 * 
+	 * Token resultOfToken = new Token(); // para generar el token se envia el
+	 * password con md5 String passwordMd5 = new
+	 * Md5PasswordEncoder().encodePassword( user.getPassword(), null); // depues
+	 * se vuelve a calcular el md5 del password + nombre de usario // antes
+	 * passwordMd5 = user.getUsername() + new
+	 * Md5PasswordEncoder().encodePassword(passwordMd5, null); // despues de
+	 * vuelve a calcular el md5 y se le añade el nombre mas dos // puntos
+	 * passwordMd5 = user.getUsername() + ":" + new
+	 * Md5PasswordEncoder().encodePassword(passwordMd5, null); String
+	 * tokenToVerify = passwordMd5;
+	 * System.out.println("el token para comprobar es: " + tokenToVerify); try {
+	 * resultOfToken = objectMapper.readValue(new URL(
+	 * "http://localhost/auth/api/checkToken?token=" + tokenToVerify),
+	 * domain.Token.class);
+	 * System.out.println("el resultado de autenticación es: " +
+	 * resultOfToken.isValid());
+	 * 
+	 * } catch (JsonParseException e1) { // TODO Auto-generated catch block
+	 * e1.printStackTrace(); } catch (JsonMappingException e1) { // TODO
+	 * Auto-generated catch block e1.printStackTrace(); } catch
+	 * (MalformedURLException e1) { // TODO Auto-generated catch block
+	 * e1.printStackTrace(); } catch (IOException e1) { // TODO Auto-generated
+	 * catch block e1.printStackTrace(); }
+	 * 
+	 * if (resultOfToken.isValid()) {// el usuario esta logueado en //
+	 * autenticación, debemos de loguearlo // aqui
+	 * 
+	 * if (!(bindingResult.hasErrors()) || bindingResult == null) {
+	 * Md5PasswordEncoder md5 = new Md5PasswordEncoder(); //
+	 * System.out.println("password encodeado de customer: "
+	 * +md5.encodePassword(user.getPassword(), // null)); //
+	 * System.out.println("password de base de datos cust: "
+	 * +userService.findByPrincipal()); try { String passDB =
+	 * loginService.loadUserByUsername( user.getUsername()).getPassword();
+	 * String passForm = md5.encodePassword(user.getPassword(), null);
+	 * System.out.println(passDB); System.out.println(passForm);
+	 * Assert.isTrue(loginService .loadUserByUsername(user.getUsername())
+	 * .getPassword() .equals(md5.encodePassword(user.getPassword(), null))); }
+	 * catch (Exception e) { System.out.println(e.toString()); // no esta en la
+	 * base de datos, lo creamos en entonces:
+	 * 
+	 * User user2 = new User(); UserAccount userAccount = new UserAccount();
+	 * Authority a = new Authority(); a.setAuthority("CUSTOMER");
+	 * userAccount.setUsername(user.getUsername()); userAccount.setPassword(new
+	 * Md5PasswordEncoder() .encodePassword(user.getPassword(), null));
+	 * userAccount.addAuthority(a); user2.setName(user.getUsername());
+	 * user2.setUserAccount(userAccount); //user2.setBanned(false);
+	 * user2.setEmail("user@mail"); user2.setLocation("location2");
+	 * user2.setNumberOfMessages(0); user2.setSurname("usernameSurnam");
+	 * user2.setComments(new ArrayList<Comment>()); user2.setThreads(new
+	 * ArrayList<Thread>()); userService.save(user2);
+	 * 
+	 * }
+	 * 
+	 * try { // Must be called from request filtered by Spring Security, //
+	 * otherwise SecurityContextHolder is not updated
+	 * 
+	 * System.out.println(request.toString());
+	 * 
+	 * UsernamePasswordAuthenticationToken token = new
+	 * UsernamePasswordAuthenticationToken( user.getUsername(),
+	 * md5.encodePassword( user.getPassword(), null)); token.setDetails(new
+	 * WebAuthenticationDetails(request)); DaoAuthenticationProvider
+	 * authenticator = new DaoAuthenticationProvider();
+	 * authenticator.setUserDetailsService(userDetailsService);
+	 * 
+	 * Authentication authentication = authenticator .authenticate(token);
+	 * SecurityContextHolder.getContext().setAuthentication( authentication); }
+	 * catch (Exception e) { e.printStackTrace();
+	 * SecurityContextHolder.getContext().setAuthentication(null); }
+	 * 
+	 * result = new ModelAndView("customer/listThreads");
+	 * 
+	 * }
+	 * 
+	 * } else {// no esta logueado, a tomar por el fonete
+	 * 
+	 * result = login();
+	 * 
+	 * }
+	 * 
+	 * // depues ya podemos loguearlo en el sistema nuestro
+	 * 
+	 * return result;
+	 * 
+	 * }
+	 * 
+	 * 
+	 * protected ModelAndView createEditModelAndView(Thread thread){
+	 * 
+	 * 
+	 * return createEditModelAndView(thread, null); }
+	 * 
+	 * protected ModelAndView createEditModelAndView(Thread thread, String
+	 * message){
+	 * 
+	 * 
+	 * ModelAndView result;
+	 * 
+	 * if (thread.getUser() == null) {// NUEVO
+	 * 
+	 * thread.setUser(userService.findByPrincipal());
+	 * thread.setCreationMoment(new Date());// necesario para la // restricción
+	 * de fecha de // creación result = new ModelAndView("customer/editThread");
+	 * result.addObject("user", thread.getUser()); result.addObject("thread",
+	 * thread);
+	 * 
+	 * } else {
+	 * 
+	 * User user = thread.getUser();
+	 * 
+	 * result = new ModelAndView("customer/editThread");
+	 * 
+	 * result.addObject("thread", thread); result.addObject("user", user);
+	 * 
+	 * }
+	 * 
+	 * return result;
+	 * 
+	 * }
+	 */
 	// CREACIÓN LOGIN FROM CABINA DE VOTACIÓN, NOS VIENE UNA ID Y UN TOKEN PARA
 	// COMPRAR CON AUTENTIFICACIÓN IMPLEMENTAR ES NECESARIO IMPLEMENTAR -
 

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import repositories.AdministratorRepository;
+import security.LoginService;
 import domain.Administrator;
 
 @Service
@@ -24,4 +25,12 @@ public class AdministratorService {
 	public Administrator save(Administrator administrator) {
 		return administratorRepository.save(administrator);
 	}
+	
+	public Administrator findByUsername(String username) {
+			return administratorRepository.findByUsername(username);
+		}
+	
+	public Administrator findByPrincipal() {
+			return administratorRepository.findOneByPrincipal(LoginService.getPrincipal().getId());
+		}
 }

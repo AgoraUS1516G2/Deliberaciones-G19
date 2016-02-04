@@ -32,7 +32,7 @@ public class Thread extends DomainEntity{
 	
 
 	//RelationShips
-	private User user;
+	private Administrator administrator;
 	private Collection<Comment> comments;
 	
 	//Getters and Setters
@@ -79,12 +79,12 @@ public class Thread extends DomainEntity{
 	
 	@NotNull
 	@ManyToOne(optional=false)
-	public User getUser() {
-		return user;
+	public Administrator getAdministrator() {
+		return administrator;
 	}
 	
-	public void setUser(User user) {
-		this.user = user;
+	public void setAdministrator(Administrator administrator) {
+		this.administrator = administrator;
 	}
 	
 	@NotNull

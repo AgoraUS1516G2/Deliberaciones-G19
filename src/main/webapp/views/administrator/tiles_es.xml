@@ -41,4 +41,9 @@
 		<put-attribute name="title" value="Banear / Desbanear Usuarios" />
 		<put-attribute name="body" value="/views/administrator/edit.jsp" />
 	</definition>
+	
+	<definition name="administrator/editThread" extends="master.page">	
+		<put-attribute name="title" value="Editar Threads" />
+		<put-attribute name="body" value="/views/administrator/editThread.jsp" />
+	</definition>
 </tiles-definitions>
