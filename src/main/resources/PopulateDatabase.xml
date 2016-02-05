@@ -98,6 +98,12 @@
 		<property name="email" value="admin@gmail.com"/>
 		<property name="location" value="Sevilla"/>
 		<property name="userAccount" ref="userAccount1" />
+		<property name="threads">
+		<list>
+			 <ref bean="thread1" />
+			 <ref bean="thread2"/>
+		</list>
+		</property>
 	</bean>
 	
 	
@@ -111,11 +117,6 @@
 		<property name="numberOfMessages" value="0"/>
 		<property name="url" value="www.google.es"/>
 		<property name="ban" ref="ban1"/>
-		<property name="threads">
-		<list>
-			 <ref bean="thread1" />
-		</list>
-		</property>
 		<property name="comments">
 		<list>
 			 <ref bean="comment1" />
@@ -132,10 +133,6 @@
 		<property name="numberOfMessages" value="0"/>
 		<property name="url" value="www.google.es"/>
 		<property name="ban" ref="ban2"/>
-		<property name="threads">
-		<list>
-		</list>
-		</property>
 		<property name="comments">
 		<list>
 			 <ref bean="comment2" />
@@ -153,11 +150,6 @@
 		<property name="numberOfMessages" value="0"/>
 		<property name="url" value="www.google.es"/>
 		<property name="ban" ref="ban3"/>
-		<property name="threads">
-		<list>
-			 <ref bean="thread2" />
-		</list>
-		</property>
 		<property name="comments">
 		<list>
 			 <ref bean="comment4" />
@@ -173,7 +165,7 @@
 	<property name="creationMoment" value="11/11/2004 12:12"/>
 	<property name="text" value="text1"/>
 	<property name="censusId" value="0"/>
-	<property name="user" ref="user1"/>
+	<property name="administrator" ref="admin"/>
 	<property name="comments">
 		<list>
 			 <ref bean="comment1" />
@@ -189,7 +181,7 @@
 	<property name="creationMoment" value="12/11/2004 12:12"/>
 	<property name="text" value="text2"/>
 	<property name="censusId" value="0"/>
-	<property name="user" ref="user3"/>
+	<property name="administrator" ref="admin"/>
 	<property name="comments">
 		<list>
 			 <ref bean="comment4" />

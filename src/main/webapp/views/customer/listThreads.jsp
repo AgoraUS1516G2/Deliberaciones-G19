@@ -20,7 +20,7 @@
 <%@taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
 <spring:message code="customer.deliberations.title" var="title"></spring:message>
-<spring:message code="customer.deliberations.author" var="author" />
+<spring:message code="customer.deliberations.censusId" var="censusId" />
 <spring:message code="customer.deliberations.date" var="date" />
 <display:table name="threads" id="row"
 	requestURI="customer/listThreads.do" pagesize="5" class="displaytag">
@@ -31,8 +31,8 @@
 		<a href="customer/seeThread.do?id=${row.id }"><jstl:out
 				value="${row.title }"></jstl:out></a>
 	</display:column>
-	<display:column title="${author }">
-		<jstl:out value="${row.user.name }"></jstl:out>
+	<display:column title="${censusId }">
+		<jstl:out value="${row.censusId }"></jstl:out>
 	</display:column>
 	<display:column title="${date }">
 		<jstl:out value="${row.creationMoment }"></jstl:out>
@@ -41,7 +41,7 @@
 	
 	<spring:message code="customer.edit" var="editHeader"/>
 	<display:column title="${editHeader}" sortable="false">
-			<a href="oadministrator/editThread.do?id=<jstl:out value="${row.id}"/>"><spring:message
+			<a href="administrator/editThread.do?id=<jstl:out value="${row.id}"/>"><spring:message
 					code="customer.edit" /> </a>
 	</display:column>
 

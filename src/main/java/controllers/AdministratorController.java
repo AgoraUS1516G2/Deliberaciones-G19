@@ -146,6 +146,19 @@ public class AdministratorController extends AbstractController {
 		return result;
 
 	}
+	
+	@RequestMapping(value = "/editThread", method = RequestMethod.GET)
+	public ModelAndView editThread(@RequestParam int id) {
+
+		ModelAndView result;
+		Thread thread;
+
+		thread = threadService.findOne(id);
+		Assert.notNull(thread);
+		result = createEditModelAndView2(thread);
+
+		return result;
+	}
 
 	@RequestMapping(value = "/editThread", method = RequestMethod.POST, params = "save")
 	public ModelAndView save(@Valid @ModelAttribute Thread thread,

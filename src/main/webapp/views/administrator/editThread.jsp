@@ -44,7 +44,7 @@
 <jstl:if test="${thread.id != 0}">
 		<input type="submit" name="delete"
 			value="<spring:message code="administrator.thread.delete"/>"
-			onclick="return confirm('<spring:message code="thread.confirm.delete" />')" />
+			onclick="return confirm('<spring:message code="administrator.thread.confirm.delete" />')" />
 		&nbsp
 	</jstl:if>
 </form:form>

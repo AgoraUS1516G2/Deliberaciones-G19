@@ -59,7 +59,7 @@
 		<security:intercept-url pattern="/customer/editCabbage.do" access="hasRole('CUSTOMER')" /> 
 		<security:intercept-url pattern="/customer/saveCabbage.do" access="hasRole('CUSTOMER')" /> 
 		<security:intercept-url pattern="/customer/listOwnCabbages.do" access="hasRole('CUSTOMER')" /> 
-		<security:intercept-url pattern="/customer/listThreads.do" access="hasRole('CUSTOMER') || hasRole('ADMIN')" /> 
+		<security:intercept-url pattern="/customer/listThreads.do" access="permitAll" /> 
 		<security:intercept-url pattern="/customer/seeThread.do" access="hasRole('CUSTOMER')" />  
 		<security:intercept-url pattern="/customer/saveComment.do" access="hasRole('CUSTOMER')" /> 
 		<security:intercept-url pattern="/comment/customer/list.do" access="hasRole('CUSTOMER')" />
