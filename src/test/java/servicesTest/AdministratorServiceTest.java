@@ -39,7 +39,7 @@ public class AdministratorServiceTest extends AbstractTest {
 	@Test
 	public void testFindOne() {
 		Administrator a;
-		Integer adminId = 7;
+		Integer adminId = 9;
 
 		a = adminService.findOne(adminId);
 
@@ -51,7 +51,7 @@ public class AdministratorServiceTest extends AbstractTest {
 	public void testSave() {
 		Administrator a;
 
-		a = adminService.findOne(7);
+		a = adminService.findOne(9);
 
 		a.setName("Nombre");
 
