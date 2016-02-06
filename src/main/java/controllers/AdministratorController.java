@@ -14,7 +14,6 @@ import java.util.Collection;
 
 import javax.validation.Valid;
 
-import org.hibernate.mapping.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -22,17 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-
-import com.mchange.v2.c3p0.stmt.GooGooStatementCache;
-
-import repositories.UserRepository;
 import services.BanService;
 import services.UserService;
 
-import com.mchange.v2.c3p0.stmt.GooGooStatementCache;
-
-import domain.Ban;
 import domain.User;
 
 

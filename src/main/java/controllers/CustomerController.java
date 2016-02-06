@@ -10,8 +10,6 @@
 
 package controllers;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,11 +53,6 @@ import security.UserAccount;
 import services.CommentService;
 import services.ThreadService;
 import services.UserService;
-import domain.CensusUser;
-import domain.Comment;
-import domain.Thread;
-import domain.Token;
-import domain.User;
 
 @Controller
 @RequestMapping("/customer")
@@ -243,8 +236,7 @@ public class CustomerController extends AbstractController {
 	@RequestMapping("/deleteThread")
 	public ModelAndView deleteThread(@RequestParam int id) {
 
-		Thread thread = threadService.findOne(id);
-
+		//Thread thread = threadService.findOne(id);
 		// to do
 
 		return new ModelAndView("customer/deleteThread");
@@ -432,7 +424,7 @@ public class CustomerController extends AbstractController {
 		try {
 			// Must be called from request filtered by Spring Security,
 			// otherwise SecurityContextHolder is not updated
-			Md5PasswordEncoder md5 = new Md5PasswordEncoder();
+			//Md5PasswordEncoder md5 = new Md5PasswordEncoder();
 			System.out.println(request.toString());
 			System.out.println("contraseña pepe de base de datos: "
 					+ user.getPassword());

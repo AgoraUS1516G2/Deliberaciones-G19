@@ -9,7 +9,6 @@ import org.springframework.util.Assert;
 
 import repositories.UserRepository;
 import security.LoginService;
-import security.UserAccountRepository;
 import domain.Ban;
 import domain.User;
 

@@ -144,6 +144,7 @@
 		</property>
 	</bean>
 	
+	
 	<bean id="user3" class="domain.User">
 		<property name="name" value="NombreUs3"/>
 		<property name="surname" value="ApellidoUs3"/>
