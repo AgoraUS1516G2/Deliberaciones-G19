@@ -50,7 +50,7 @@ public class CommentServiceTest extends AbstractTest {
 	@Test
 	public void testFindOne() {
 		Comment c;
-		Integer commentId = 6;
+		Integer commentId = 15;
 
 		c = commentService.findOne(commentId);
 
@@ -74,8 +74,8 @@ public class CommentServiceTest extends AbstractTest {
 		Thread t;
 		Date d;
 
-		u = userService.findOne(4);
-		t = threadService.findOne(5);
+		u = userService.findOne(10);
+		t = threadService.findOne(13);
 		d = new Date();
 		
 		c = commentService.create();
@@ -92,7 +92,7 @@ public class CommentServiceTest extends AbstractTest {
 
 	@Test
 	public void testDelete() {
-		Comment t = commentService.findOne(6);
+		Comment t = commentService.findOne(15);
 
 		commentService.delete(t);
 		System.out.println("eliminado");

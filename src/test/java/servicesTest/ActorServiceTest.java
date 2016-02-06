@@ -39,7 +39,7 @@ public class ActorServiceTest extends AbstractTest{
 	@Test
 	public void testFindOne(){
 		Actor a;
-		Integer actorId=4;
+		Integer actorId=10;
 		
 		a=actorService.findOne(actorId);
 		
@@ -52,7 +52,7 @@ public class ActorServiceTest extends AbstractTest{
 	public void testSave() {
 		Actor a;
 		
-		a = actorService.findOne(4);
+		a = actorService.findOne(10);
 
 		a.setName("Nombre");
 

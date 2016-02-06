@@ -42,7 +42,7 @@ public class ThreadServiceTest extends AbstractTest {
 	@Test
 	public void testFindOne() {
 		Thread a;
-		Integer threadId = 5;
+		Integer threadId = 13;
 
 		a = threadService.findOne(threadId);
 
@@ -55,7 +55,7 @@ public class ThreadServiceTest extends AbstractTest {
 		Collection<Comment> comments = new LinkedList<Comment>();
 		Thread t;
 		
-		t = threadService.findOne(5);
+		t = threadService.findOne(13);
 
 		t.setComments(comments);
 		t.setText("Thread");
