@@ -17,3 +17,5 @@
 <hr />
 
 <b>Copyright &copy; <fmt:formatDate value="${date}" pattern="yyyy" /> Deliberaciones, Agora@US</b>
+
+
