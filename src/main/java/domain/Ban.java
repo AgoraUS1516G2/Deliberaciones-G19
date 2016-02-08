@@ -3,10 +3,8 @@ package domain;
 import javax.persistence.Entity;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Access(AccessType.PROPERTY)
