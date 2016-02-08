@@ -23,6 +23,9 @@
 
 <display:table name="comments" id="row" requestURI="${requestURI}" pagesize="5" class="displaytag" keepStatus="true">
 
+	<spring:message code="comment.thread" var="thread" />
+	<display:column property="thread.title" title="${thread}" sortable="true" />
+
 	<spring:message code="comment.text" var="text" />
 	<display:column property="text" title="${text}" sortable="true" />
 	
