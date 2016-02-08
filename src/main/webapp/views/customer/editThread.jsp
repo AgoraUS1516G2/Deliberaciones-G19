@@ -23,7 +23,6 @@
 
 <form:hidden path="id"/>
 <form:hidden path="version"/>	
-<form:hidden path="user"/>
 <form:hidden path="creationMoment"/>
 <form:hidden path="comments"/>
 
