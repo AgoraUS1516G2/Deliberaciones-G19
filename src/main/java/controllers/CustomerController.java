@@ -184,50 +184,7 @@ public class CustomerController extends AbstractController {
 
 	}
 
-	@RequestMapping("/createThread")
-	public ModelAndView createThread() {
-
-		ModelAndView result = createEditModelAndView(new domain.Thread());
-
-		return result;
-
-	}
-
-	@RequestMapping("/editThread")
-	public ModelAndView editThread(@RequestParam int id) {
-		Thread thread = threadService.findOne(id);
-
-		ModelAndView result = createEditModelAndView(thread);
-
-		return result;
-
-	}
-
-	@RequestMapping("/saveThread")
-	public ModelAndView saveThread(@ModelAttribute("thread") @Valid Thread thread, BindingResult binding){
-		UserAccount ua = LoginService.getPrincipal();
-		User x = userService.findByUsername(ua.getUsername());
-		ModelAndView result = null;
-		if(x.getBan().getBanned()!=true){
-		if(binding.hasErrors()){
-			result=createEditModelAndView(thread);
-			
-			System.out.println(binding.toString());
-		}else{
-			try{	
-				threadService.save(thread);
-				result=new ModelAndView("redirect:listThreads.do");
-			}catch(Throwable opps){
-				result=createEditModelAndView(thread, "Transactional error");
-			}
-		}
-		return result;
-		}else{
-			JOptionPane.showMessageDialog(null,"Estás baneado y no puedes comentar aquí");
-			result=new ModelAndView("redirect:listThreads.do");
-			return result;
-		}
-	}
+	
 
 	@RequestMapping("/deleteThread")
 	public ModelAndView deleteThread(@RequestParam int id) {
