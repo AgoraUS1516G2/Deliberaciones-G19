@@ -159,7 +159,7 @@
 		</list>
 		</property>
 	</bean>
-	
+
 	<!-- Thread  -->
 	<bean id="thread1" class="domain.Thread">
 	<property name="title" value="titulo1"/>
