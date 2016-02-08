@@ -124,11 +124,7 @@ public class AdministratorController extends AbstractController {
 
 		return result;
 	}
-
-	// DISPLAY A DASHBOARD WITH NUMER OF CABBAGES SYSTEM STORED AND THE LIST OF
-	// CUSTOMERS WHOE HAVE POSTED MORE CABBAGES
-	// YO JOSE MARIA CABALLERO ALBA ENTIENDO QUE DEBO DE MOSTRAR EL NUMERO DE
-	// ANUNCIOs Y LA LISTA DE CUSTOMER QUE TIENEN ANUNCIOS
+	
 
 	// ---------Crear, Modificar y borrar Threads----------
 
