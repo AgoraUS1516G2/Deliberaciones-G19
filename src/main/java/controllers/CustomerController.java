@@ -10,6 +10,9 @@
 
 package controllers;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -178,6 +181,61 @@ public class CustomerController extends AbstractController {
 		}
 
 		return result;
+
+	}
+
+	@RequestMapping("/createThread")
+	public ModelAndView createThread() {
+
+		ModelAndView result = createEditModelAndView(new domain.Thread());
+
+		return result;
+
+	}
+
+	@RequestMapping("/editThread")
+	public ModelAndView editThread(@RequestParam int id) {
+		Thread thread = threadService.findOne(id);
+
+		ModelAndView result = createEditModelAndView(thread);
+
+		return result;
+
+	}
+
+	@RequestMapping("/saveThread")
+	public ModelAndView saveThread(@ModelAttribute("thread") @Valid Thread thread, BindingResult binding){
+		UserAccount ua = LoginService.getPrincipal();
+		User x = userService.findByUsername(ua.getUsername());
+		ModelAndView result = null;
+		if(x.getBan().getBanned()!=true){
+		if(binding.hasErrors()){
+			result=createEditModelAndView(thread);
+			
+			System.out.println(binding.toString());
+		}else{
+			try{	
+				threadService.save(thread);
+				result=new ModelAndView("redirect:listThreads.do");
+			}catch(Throwable opps){
+				result=createEditModelAndView(thread, "Transactional error");
+			}
+		}
+		return result;
+		}else{
+			JOptionPane.showMessageDialog(null,"Estás baneado y no puedes comentar aquí");
+			result=new ModelAndView("redirect:listThreads.do");
+			return result;
+		}
+	}
+
+	@RequestMapping("/deleteThread")
+	public ModelAndView deleteThread(@RequestParam int id) {
+
+		//Thread thread = threadService.findOne(id);
+		// to do
+
+		return new ModelAndView("customer/deleteThread");
 
 	}
 

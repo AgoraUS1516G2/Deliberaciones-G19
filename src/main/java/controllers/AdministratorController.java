@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import services.AdministratorService;
 import services.BanService;
 import services.ThreadService;
 import services.UserService;
+
 import domain.Administrator;
-import domain.Thread;
 import domain.User;
+import domain.Thread;
 
 @Controller
 @RequestMapping("/administrator")
