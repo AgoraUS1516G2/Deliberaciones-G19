@@ -1,4 +1,4 @@
-﻿<%--
+<%--
  * action-2.jsp
  *
  * Copyright (C) 2013 Universidad de Sevilla

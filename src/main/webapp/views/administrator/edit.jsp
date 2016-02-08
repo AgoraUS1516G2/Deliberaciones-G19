@@ -14,7 +14,6 @@
 	<form:hidden path="numberOfMessages" />
 	<form:hidden path="url" />
 	<form:hidden path="comments" />
-	<form:hidden path="threads" />
 	<form:hidden path="name"/>
 	<form:hidden path="surname"/>
 	<form:hidden path="email"/>
@@ -29,4 +28,3 @@
 	<input type="button" name="cancel" value="<spring:message code="administrator.user.cancel"/>" onclick="javascript: window.location.replace('administrator/list.do')"/>
 	
 </form:form>
-
