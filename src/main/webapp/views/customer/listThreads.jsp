@@ -39,11 +39,12 @@
 	</display:column>
 	
 	
+	<security:authorize access="hasRole('ADMIN')">
 	<spring:message code="customer.edit" var="editHeader"/>
 	<display:column title="${editHeader}" sortable="false">
 			<a href="administrator/editThread.do?id=<jstl:out value="${row.id}"/>"><spring:message
 					code="customer.edit" /> </a>
 	</display:column>
-
+	</security:authorize>
 
 </display:table>
